@@ -17,16 +17,21 @@ body {
   font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
-  line-height: 1.8;
+  line-height: 1.85;
+  overflow-x: hidden;
 }
 
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
+a:focus-visible, button:focus-visible {
+  outline: 3px solid #7aa2e6;
+  outline-offset: 2px;
+}
 
 img { max-width: 100%; height: auto; }
 
 .container {
-  width: min(100% - 2rem, var(--max-width));
+  width: min(100% - 1.25rem, var(--max-width));
   margin-inline: auto;
 }
 
@@ -43,21 +48,24 @@ img { max-width: 100%; height: auto; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.75rem;
   min-height: 72px;
+  padding-block: 0.45rem;
 }
 
 .brand {
   font-weight: 700;
   color: var(--primary);
-  font-size: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .nav-toggle {
   border: 1px solid var(--line);
   border-radius: 0.5rem;
   background: #fff;
-  padding: 0.5rem 0.75rem;
+  padding: 0.55rem 0.85rem;
   font-size: 0.95rem;
 }
 
@@ -76,8 +84,9 @@ img { max-width: 100%; height: auto; }
 
 .site-nav a {
   display: block;
-  padding: 0.5rem;
+  padding: 0.6rem;
   border-radius: 0.5rem;
+  line-height: 1.5;
 }
 
 .site-nav a[aria-current="page"] {
@@ -88,30 +97,25 @@ img { max-width: 100%; height: auto; }
 
 .site-nav.is-open { display: block; }
 
-main { padding: 2rem 0 4rem; }
+main { padding: 1.5rem 0 3rem; }
 
 .section {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 1rem;
-  padding: 1.5rem;
-  margin-bottom: 1.25rem;
+  padding: 1.35rem;
+  margin-bottom: 1rem;
 }
 
-.hero {
-  padding: 2rem 1.5rem;
-}
+.hero { padding: 1.6rem 1.35rem; }
 
-h1, h2, h3 { line-height: 1.4; color: var(--primary); margin-top: 0; }
-h1 { font-size: 1.6rem; }
-h2 { font-size: 1.3rem; margin-bottom: 0.8rem; }
+h1, h2, h3 { line-height: 1.45; color: var(--primary); margin-top: 0; }
+h1 { font-size: 1.42rem; }
+h2 { font-size: 1.2rem; margin-bottom: 0.8rem; }
 
 .lead { color: var(--muted); margin-bottom: 1.25rem; }
 
-.grid {
-  display: grid;
-  gap: 0.85rem;
-}
+.grid { display: grid; gap: 0.85rem; }
 
 .list-card {
   background: #fff;
@@ -128,8 +132,11 @@ h2 { font-size: 1.3rem; margin-bottom: 0.8rem; }
 }
 
 .button {
-  display: inline-block;
-  padding: 0.75rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.78rem 1.05rem;
   border-radius: 0.6rem;
   font-weight: 700;
   border: 1px solid var(--primary);
@@ -145,10 +152,17 @@ h2 { font-size: 1.3rem; margin-bottom: 0.8rem; }
   color: var(--primary);
 }
 
-.note {
-  color: var(--muted);
-  font-size: 0.95rem;
+.cta-box {
+  background: #eef3fb;
+  border-color: #c9d6ea;
+  padding: 1.6rem;
 }
+
+.cta-box .button {
+  margin-top: 0.5rem;
+}
+
+.note { color: var(--muted); font-size: 0.95rem; }
 
 .site-footer {
   border-top: 1px solid var(--line);
@@ -165,9 +179,15 @@ h2 { font-size: 1.3rem; margin-bottom: 0.8rem; }
   list-style: none;
 }
 
+dl { margin: 0; }
+dt { font-weight: 700; margin-top: 0.65rem; }
+dd { margin: 0; }
+
 table {
   width: 100%;
   border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
 }
 
 th, td {
@@ -177,7 +197,12 @@ th, td {
   vertical-align: top;
 }
 
+@media (max-width: 420px) {
+  .button { width: 100%; }
+}
+
 @media (min-width: 860px) {
+  .container { width: min(100% - 2rem, var(--max-width)); }
   .nav-toggle { display: none; }
   .site-nav { display: block; padding-bottom: 0; }
   .site-nav ul { display: flex; gap: 0.5rem; }
@@ -188,5 +213,5 @@ th, td {
 
   h1 { font-size: 2rem; }
   h2 { font-size: 1.5rem; }
-  .section, .hero { padding: 2rem; }
+  .section, .hero, .cta-box { padding: 2rem; }
 }
