@@ -1,0 +1,114 @@
+name: Static site check
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  static-site-check:
+    name: Static site check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check required site files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          required_files=(
+            "index.html"
+            "services.html"
+            "flow.html"
+            "faq.html"
+            "company.html"
+            "contact.html"
+            "privacy.html"
+            "css/style.css"
+            "js/script.js"
+            "robots.txt"
+            "sitemap.xml"
+            "AGENTS.md"
+          )
+
+          for file in "${required_files[@]}"; do
+            if [[ ! -f "$file" ]]; then
+              echo "Missing required file: $file"
+              exit 1
+            fi
+          done
+
+      - name: Check HTML files for basic required tags
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          html_files=(
+            "index.html"
+            "services.html"
+            "flow.html"
+            "faq.html"
+            "company.html"
+            "contact.html"
+            "privacy.html"
+          )
+
+          for file in "${html_files[@]}"; do
+            echo "Checking $file"
+            grep -qi '<!doctype html>' "$file" || { echo "$file: missing <!doctype html>"; exit 1; }
+            grep -qi '<html lang="ja"' "$file" || { echo "$file: missing html lang=ja"; exit 1; }
+            grep -qi '<title>' "$file" || { echo "$file: missing title"; exit 1; }
+            grep -qi 'name="description"' "$file" || { echo "$file: missing meta description"; exit 1; }
+            grep -qi 'rel="stylesheet" href="css/style.css"' "$file" || { echo "$file: missing stylesheet link"; exit 1; }
+            grep -qi 'href="/contact"' "$file" || { echo "$file: missing contact navigation link"; exit 1; }
+          done
+
+      - name: Check official business wording
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          grep -R "AI活用・業務改善支援事業" -- *.html AGENTS.md >/dev/null || {
+            echo "Official business name was not found."
+            exit 1
+          }
+
+      - name: Check that old formal names are not reintroduced
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          forbidden_terms=(
+            "AI業務診断"
+            "文書業務AI導入支援"
+            "AI業務効率化支援事業"
+            "中小企業向けAI業務改善支援事業"
+            "月次伴走サポート"
+            "月次伴走"
+            "AI顧問"
+            "顧問契約"
+            "AI導入→顧問契約"
+          )
+
+          for term in "${forbidden_terms[@]}"; do
+            if grep -R "$term" -- *.html AGENTS.md css js 2>/dev/null; then
+              echo "Forbidden old term found: $term"
+              exit 1
+            fi
+          done
+
+      - name: Check internal links use clean root-relative paths
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if grep -R 'href=".*\.html"' -- *.html; then
+            echo "Found .html internal links. Use clean root-relative paths such as /services."
+            exit 1
+          fi
